@@ -8,10 +8,24 @@ namespace platzi_asp_net_core.Controllers
 {
     public class AlumnoController : Controller
     {
-        public  IActionResult Index()
+        [Route("Alumno/Index/{alumnoId?}")]
+        public IActionResult Index(string alumnoId)
         {
-            return View( _context.Alumnos.FirstOrDefault());
+            ViewBag.Fecha = DateTime.Now;
+            if (!string.IsNullOrWhiteSpace(alumnoId))
+            {
+                var alumnos = from alum in _context.Alumnos
+                             where alum.Id == alumnoId
+                             select alum;
+
+                return View(alumnos.SingleOrDefault());
+            }
+            else
+            {
+                return View("MultiAlumno", _context.Alumnos);
+            } 
         }
+
         public  IActionResult MultiAlumno()
         {
             ViewBag.CosaDinamica = "La Monja";

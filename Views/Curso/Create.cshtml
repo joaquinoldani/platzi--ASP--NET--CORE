@@ -1,0 +1,38 @@
+﻿@model Curso
+
+@{
+    ViewData["Title"] = "Crear Curso";
+    Layout = "Simple";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<div class="alert alert-warning" asp-validation-summary="All"></div>
+
+
+<form method="POST">
+    <div class="row">
+        <div class="col-6">
+            <div class="py-1">
+                <label asp-for="Nombre"></label>
+                <input class="form-control" asp-for="Nombre"/>
+            </div>
+            <div class="py-1">
+                <label asp-for="Dirección"></label>
+                <input class="form-control" asp-for="Dirección"/>
+            </div>
+            <div class="py-1">
+                <label asp-for="Jornada"></label>
+                <!-- con este codigo traigo la lista de valores que puede tomar una jornada
+                a traves de un Enum -->
+                @Html.DropDownList(
+                    "Jornada", Html.GetEnumSelectList<TiposJornada>(), "Seleccione una jornada",
+                        new {@class = "form-control"}
+                )
+            </div>
+            <input type="submit"/>
+            </div>
+        </div>
+    </div>
+</form>
