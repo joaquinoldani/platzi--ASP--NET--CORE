@@ -12,5 +12,10 @@ namespace platzi_asp_net_core.Models
 
         public string Dirección { get; set; }
 
+        // por convencion la relacion con la escuela se escribe con ese nombre
+        public string EscuelaId { get; set; } 
+
+        // pero ademas quiero traer el objeto Escuela de la siguiente manera
+        public Escuela Escuela { get; set; }
     }
 }
