@@ -36,12 +36,14 @@ namespace platzi_asp_net_core.Models
             var asignaturas = CargarAsignaturas(cursos);
             // ademas por cada curso también tengo que cargar los alumnos
             var alumnos = CargarAlumnos(cursos);
+            var evaluaciones = CargarEvaluaciones(cursos, asignaturas, alumnos);
 
             // Si no hay datos en la BD los cargo asi
             modelBuilder.Entity<Escuela>().HasData(escuela);
             modelBuilder.Entity<Curso>().HasData(cursos.ToArray());
             modelBuilder.Entity<Asignatura>().HasData(asignaturas.ToArray());
             modelBuilder.Entity<Alumno>().HasData(alumnos.ToArray());
+            modelBuilder.Entity<Evaluacion>().HasData(evaluaciones.ToArray());
         }
 
         private static List<Asignatura> CargarAsignaturas(List<Curso> cursos)
@@ -56,47 +58,19 @@ namespace platzi_asp_net_core.Models
                     new Asignatura { Nombre = "Ciencias Naturales", Id = Guid.NewGuid().ToString(), CursoId = curso.Id },
                     new Asignatura { Nombre = "Programacion", Id = Guid.NewGuid().ToString(), CursoId = curso.Id }
                 };
-
                 listaCompleta.AddRange(tempList);
-                //curso.Asignaturas=tempList;
             }
-
             return listaCompleta;
         }
 
         private static List<Curso> CargarCursos(Escuela escuela)
         {
             return new List<Curso>(){
-                new Curso(){
-                    Id = Guid.NewGuid().ToString(),
-                    EscuelaId = escuela.Id,
-                    Nombre = "101",
-                    Jornada = TiposJornada.Mañana
-                },
-                new Curso(){
-                    Id = Guid.NewGuid().ToString(),
-                    EscuelaId = escuela.Id,
-                    Nombre = "201",
-                    Jornada = TiposJornada.Mañana
-                },
-                new Curso(){
-                    Id = Guid.NewGuid().ToString(),
-                    EscuelaId = escuela.Id,
-                    Nombre = "301",
-                    Jornada = TiposJornada.Mañana
-                },
-                new Curso(){
-                    Id = Guid.NewGuid().ToString(),
-                    EscuelaId = escuela.Id,
-                    Nombre = "401",
-                    Jornada = TiposJornada.Tarde
-                },
-                new Curso(){
-                    Id = Guid.NewGuid().ToString(),
-                    EscuelaId = escuela.Id,
-                    Nombre = "501",
-                    Jornada = TiposJornada.Tarde
-                },
+                new Curso(){Id = Guid.NewGuid().ToString(),EscuelaId = escuela.Id,Nombre = "101",Jornada = TiposJornada.Mañana, Dirección = "Av. Siempre Viva"},
+                new Curso(){Id = Guid.NewGuid().ToString(),EscuelaId = escuela.Id,Nombre = "201",Jornada = TiposJornada.Mañana, Dirección = "Av. Siempre Viva"},
+                new Curso(){Id = Guid.NewGuid().ToString(),EscuelaId = escuela.Id,Nombre = "301",Jornada = TiposJornada.Mañana, Dirección = "Av. Siempre Viva"},
+                new Curso(){Id = Guid.NewGuid().ToString(),EscuelaId = escuela.Id,Nombre = "401",Jornada = TiposJornada.Tarde, Dirección = "Av. Siempre Viva"},
+                new Curso(){Id = Guid.NewGuid().ToString(),EscuelaId = escuela.Id,Nombre = "501",Jornada = TiposJornada.Tarde, Dirección = "Av. Siempre Viva"}
             };
         }
     
@@ -130,8 +104,37 @@ namespace platzi_asp_net_core.Models
                                    Id = Guid.NewGuid().ToString(),
                                    CursoId = curso.Id
                                 };
-
             return listaAlumnos.OrderBy((al) => al.Id).Take(cantidad).ToList();
+        }
+
+        private List<Evaluacion> CargarEvaluaciones(List<Curso> cursos, List<Asignatura> asignaturas, List<Alumno> alumnos, int numeroEvaluaciones = 10)
+        {
+            Random rnd = new Random();
+            var listaEv = new List<Evaluacion>();
+            foreach (var curso in cursos)
+            {
+                foreach (var asignatura in asignaturas)
+                {
+                    foreach (var alumno in alumnos)
+                    {
+                        for (int i = 0; i < numeroEvaluaciones; i++)
+                        {
+                            int cantRandom = rnd.Next(0, 500);
+                            var tmp = new List<Evaluacion> {
+                                new Evaluacion { 
+                                    Id = Guid.NewGuid().ToString(),
+                                    Nombre = "Evaluación de " + asignatura.Nombre + " # " + (i + 1),
+                                    AlumnoId = alumno.Id,
+                                    AsignaturaId = asignatura.Id,
+                                    Nota = (float)cantRandom/100
+                                }
+                            };
+                            listaEv.AddRange(tmp);
+                        }
+                    }
+                }
+            }
+            return listaEv;
         }
     }
 }
